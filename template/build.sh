@@ -28,12 +28,7 @@ check_input(){
 }
 
 build_image(){
-    if [ -z "${1}" ] || [ -z "${2}" ]; then
-        help_message
-    else
-        echo "${1} ${2}"
-        docker build . --tag ${BUILDER}/${REPO}
-    fi    
+    docker build . --tag ${BUILDER}/${REPO}
 }
 
 test_image(){
@@ -79,21 +74,20 @@ main(){
 
 #check_input ${1}
 #while [ ! -z "${1}" ]; do
-    case ${1} in
-        -[hH] | -help | --help)
-            help_message
-            ;;
-        -[tT] | -tag | -TAG | --tag) shift
-            TAG="${1}"
-            ;;       
-        --push )
-            PUSH=true
-            ;;            
-        *) 
-            help_message
-            ;;              
-    esac
-    shift
+case ${1} in
+    -[hH] | -help | --help)
+        help_message
+        ;;
+    -[tT] | -tag | -TAG | --tag) shift
+        TAG="${1}"
+        ;;       
+    --push )
+        PUSH=true
+        ;;            
+    *) 
+        help_message
+        ;;              
+esac
 #done
 
 main
