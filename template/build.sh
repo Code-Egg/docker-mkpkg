@@ -72,22 +72,23 @@ main(){
     push_image ${TAG}
 }
 
-#check_input ${1}
-#while [ ! -z "${1}" ]; do
-case ${1} in
-    -[hH] | -help | --help)
-        help_message
-        ;;
-    -[tT] | -tag | -TAG | --tag) shift
-        TAG="${1}"
-        ;;       
-    --push )
-        PUSH=true
-        ;;            
-    *) 
-        help_message
-        ;;              
-esac
-#done
+check_input ${1}
+while [ ! -z "${1}" ]; do
+    case ${1} in
+        -[hH] | -help | --help)
+            help_message
+            ;;
+        -[tT] | -tag | -TAG | --tag) shift
+            TAG="${1}"
+            ;;       
+        --push )
+            PUSH=true
+            ;;            
+        *) 
+            help_message
+            ;;              
+    esac
+    shift
+done
 
 main
