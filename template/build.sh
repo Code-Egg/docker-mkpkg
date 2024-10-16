@@ -63,8 +63,8 @@ push_image(){
         fi
         docker ${CONFIG} push ${BUILDER}/${REPO}
         if [ ! -z "${TAG}" ]; then
-            docker tag ${BUILDER}/${REPO} ${BUILDER}/${REPO}:${3}
-            docker ${CONFIG} push ${BUILDER}/${REPO}:${3}
+            docker tag ${BUILDER}/${REPO} ${BUILDER}/${REPO}:${1}
+            docker ${CONFIG} push ${BUILDER}/${REPO}:${1}
         fi
     else
         echo 'Skip Push.'    
@@ -72,13 +72,13 @@ push_image(){
 }
 
 main(){
-    build_image ${LSWS_VERSION} ${PHP_VERSION}
-    #test_image ${LSWS_VERSION} ${PHP_VERSION}
-    push_image ${LSWS_VERSION} ${PHP_VERSION} ${TAG}
+    build_image
+    #test_image
+    push_image ${TAG}
 }
 
 check_input ${1}
-while [ ! -z "${1}" ]; do
+#while [ ! -z "${1}" ]; do
     case ${1} in
         -[hH] | -help | --help)
             help_message
@@ -94,6 +94,6 @@ while [ ! -z "${1}" ]; do
             ;;              
     esac
     shift
-done
+#done
 
 main
