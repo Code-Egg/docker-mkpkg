@@ -1,0 +1,38 @@
+name: docker-build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+env:
+  FOLDER: template
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        TAG: [latest,'']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker build and push
+        if: ${{ (github.ref == 'refs/heads/master' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch') }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          cd ${{ env.FOLDER }}
+          bash build.sh --tag "${{ matrix.TAG }}" --push
+        env: 
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}     
+      - name: Docker build
+        if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'pull_request' }}
+        run: |
+          cd ${{ env.FOLDER }}
+          bash build.sh --tag ${{ matrix.TAG }}            
+
+  
