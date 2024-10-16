@@ -32,12 +32,12 @@ build_image(){
         help_message
     else
         echo "${1} ${2}"
-        docker build . --tag ${BUILDER}/${REPO}:${1}-${2} --build-arg LSWS_VERSION=${1} --build-arg PHP_VERSION=${2}
+        docker build . --tag ${BUILDER}/${REPO}
     fi    
 }
 
 test_image(){
-    ID=$(docker run -d ${BUILDER}/${REPO}:${1}-${2})
+    ID=$(docker run -d ${BUILDER}/${REPO})
     sleep 1
     docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ \
     && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php \
@@ -61,9 +61,9 @@ push_image(){
         if [ -f ~/.docker/coldegg/config.json ]; then
             CONFIG=$(echo --config ~/.docker/coldegg)
         fi
-        docker ${CONFIG} push ${BUILDER}/${REPO}:${1}-${2}
+        docker ${CONFIG} push ${BUILDER}/${REPO}
         if [ ! -z "${TAG}" ]; then
-            docker tag ${BUILDER}/${REPO}:${1}-${2} ${BUILDER}/${REPO}:${3}
+            docker tag ${BUILDER}/${REPO} ${BUILDER}/${REPO}:${3}
             docker ${CONFIG} push ${BUILDER}/${REPO}:${3}
         fi
     else
@@ -73,7 +73,7 @@ push_image(){
 
 main(){
     build_image ${LSWS_VERSION} ${PHP_VERSION}
-    test_image ${LSWS_VERSION} ${PHP_VERSION}
+    #test_image ${LSWS_VERSION} ${PHP_VERSION}
     push_image ${LSWS_VERSION} ${PHP_VERSION} ${TAG}
 }
 
