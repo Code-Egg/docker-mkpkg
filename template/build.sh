@@ -28,7 +28,12 @@ check_input(){
 }
 
 build_image(){
-    docker build . --tag ${BUILDER}/${REPO}:${1}
+    if [ -z "${1}" ]; then
+        help_message
+    else
+        echo "${1}"
+        docker build . --tag ${BUILDER}/${REPO}:${1} --build-arg VERSION=${1}
+    fi    
 }
 
 test_image(){

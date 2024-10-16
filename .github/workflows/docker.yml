@@ -11,6 +11,7 @@ on:
       - main
 env:
   FOLDER: template
+  VERSION: 1
 
 jobs:
   test:
@@ -25,7 +26,7 @@ jobs:
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           cd ${{ env.FOLDER }}
-          bash build.sh --tag "${{ matrix.TAG }}" --push
+          bash build.sh --version ${{ env.VERSION }} --tag "${{ matrix.TAG }}" --push
         env: 
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}     
@@ -33,6 +34,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'pull_request' }}
         run: |
           cd ${{ env.FOLDER }}
-          bash build.sh --tag ${{ matrix.TAG }}            
+          bash build.sh --version ${{ env.VERSION }} --tag ${{ matrix.TAG }}     
 
   
