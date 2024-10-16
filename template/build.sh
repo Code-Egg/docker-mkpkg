@@ -77,7 +77,7 @@ main(){
     push_image ${TAG}
 }
 
-check_input ${1}
+#check_input ${1}
 #while [ ! -z "${1}" ]; do
     case ${1} in
         -[hH] | -help | --help)
