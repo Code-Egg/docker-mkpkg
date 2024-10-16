@@ -14,10 +14,10 @@ echow(){
 
 help_message(){
     echo -e "\033[1mOPTIONS\033[0m" 
-    echow '-T, --tag [TAG_NAME]'
-    echo "${EPACE}${EPACE}Example: bash build.sh"
+    echow '-V, --version [VERSION_NUMBER]'
+    echo "${EPACE}${EPACE}Example: bash build.sh -V 101"
     echow '--push'
-    echo "${EPACE}${EPACE}Example: build.sh --push, will push to the dockerhub"
+    echo "${EPACE}${EPACE}Example: build.sh -V101 --push, will push to the dockerhub"
     exit 0
 }
 
@@ -28,7 +28,7 @@ check_input(){
 }
 
 build_image(){
-    docker build . --tag ${BUILDER}/${REPO}
+    docker build . --tag ${BUILDER}/${REPO}:${1}
 }
 
 test_image(){
@@ -56,10 +56,10 @@ push_image(){
         if [ -f ~/.docker/coldegg/config.json ]; then
             CONFIG=$(echo --config ~/.docker/coldegg)
         fi
-        docker ${CONFIG} push ${BUILDER}/${REPO}
+        docker ${CONFIG} push ${BUILDER}/${REPO}:${1}
         if [ ! -z "${TAG}" ]; then
-            docker tag ${BUILDER}/${REPO} ${BUILDER}/${REPO}:${1}
-            docker ${CONFIG} push ${BUILDER}/${REPO}:${1}
+            docker tag ${BUILDER}/${REPO}:${1} ${BUILDER}/${REPO}:${2}
+            docker ${CONFIG} push ${BUILDER}/${REPO}:${2}
         fi
     else
         echo 'Skip Push.'    
@@ -67,9 +67,9 @@ push_image(){
 }
 
 main(){
-    build_image
-    #test_image
-    push_image ${TAG}
+    build_image ${VERSION}
+    #test_image ${VERSION}
+    push_image ${VERSION} ${TAG}
 }
 
 check_input ${1}
@@ -78,6 +78,10 @@ while [ ! -z "${1}" ]; do
         -[hH] | -help | --help)
             help_message
             ;;
+        -[vV] | -version | --version) shift
+            check_input "${1}"
+            VERSION="${1}"
+            ;;            
         -[tT] | -tag | -TAG | --tag) shift
             TAG="${1}"
             ;;       
