@@ -11,7 +11,7 @@ on:
       - main
 env:
   FOLDER: template
-  VERSION: 4
+  VERSION: 5
 
 jobs:
   test:
